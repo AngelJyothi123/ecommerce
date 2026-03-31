@@ -1,32 +1,41 @@
 import { useState, useEffect, useCallback } from "react";
 import { productService } from "../services/productService";
+import { categoryService } from "../services/categoryService";
 import { SAMPLE_PRODUCTS, SAMPLE_CATEGORIES } from "../utils/products";
 import ProductCard from "../components/ProductCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const HomePage = () => {
   const [products, setProducts] = useState(SAMPLE_PRODUCTS);
-  const [categories] = useState(SAMPLE_CATEGORIES);
+  const [categories, setCategories] = useState(SAMPLE_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
   const normalizeProduct = useCallback((product) => {
-    if (product.category && typeof product.category === 'object') {
-      return product;
-    }
-    if (product.categoryId) {
-      const cat = categories.find(c => c.id === product.categoryId);
-      return {
-        ...product,
-        category: cat ? { id: cat.id, name: cat.name } : { id: product.categoryId, name: "Uncategorized" }
-      };
-    }
     return {
       ...product,
-      category: { id: null, name: "Uncategorized" }
+      id: product.productId || product.id,
+      category: product.category
+        ? { ...product.category, id: product.category.categoryId || product.category.id }
+        : null,
     };
-  }, [categories]);
+  }, []);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await categoryService.getAll();
+      if (response.data && response.data.length > 0) {
+        const normalized = response.data.map((cat) => ({
+          ...cat,
+          id: cat.categoryId || cat.id,
+        }));
+        setCategories(normalized);
+      }
+    } catch {
+      // keep sample categories
+    }
+  }, []);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -46,8 +55,9 @@ const HomePage = () => {
   }, [normalizeProduct]);
 
   useEffect(() => {
+    fetchCategories();
     fetchProducts();
-  }, [fetchProducts]);
+  }, [fetchCategories, fetchProducts]);
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);

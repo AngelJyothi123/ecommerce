@@ -41,7 +41,7 @@ public class Order {
     private List<OrderItem> orderItems;
 
     public enum OrderStatus {
-        PENDING, PAID, SHIPPED, DELIVERED, CANCELLED
+        PENDING, PROCESSING, PAID, SHIPPED, DELIVERED, CANCELLED
     }
 
     @PrePersist

@@ -9,11 +9,24 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const normalizeServerCartItem = (item) => ({
+    cartItemId: item.cartItemId,
+    productId: item.product?.productId,
+    id: item.product?.productId,
+    name: item.product?.name,
+    price: item.product?.price,
+    imageUrl: item.product?.imageUrl,
+    category: item.product?.category,
+    stock: item.product?.stock,
+    quantity: item.quantity,
+  });
+
   const fetchCart = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get("/cart");
-      setCart(response.data.items || []);
+      const items = (response.data.cartItems || []).map(normalizeServerCartItem);
+      setCart(items);
     } catch (error) {
       console.error("Error fetching cart:", error);
     } finally {
@@ -39,7 +52,8 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (product, quantity = 1) => {
     if (isAuthenticated()) {
       try {
-        await api.post("/cart/add", { productId: product.id, quantity });
+        const productId = product.productId || product.id;
+        await api.post("/cart/add", { productId, quantity });
         await fetchCart();
       } catch (error) {
         console.error("Error adding to cart:", error);

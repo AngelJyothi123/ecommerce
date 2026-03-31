@@ -6,6 +6,7 @@ import { formatCurrency } from "../utils/helpers";
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const { addToast } = useToast();
+  const productId = product.productId || product.id;
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <Link to={`/products/${product.id}`} className="glass-card group block overflow-hidden hover:-translate-y-2">
+    <Link to={`/products/${productId}`} className="glass-card group block overflow-hidden hover:-translate-y-2">
       <div className="aspect-[4/3] bg-black/50 overflow-hidden relative">
         <img
           src={product.imageUrl}

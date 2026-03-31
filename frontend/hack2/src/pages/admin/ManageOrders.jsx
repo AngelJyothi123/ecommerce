@@ -48,7 +48,7 @@ const ManageOrders = () => {
     return colors[status] || "bg-gray-100 text-gray-800 border-gray-200";
   };
 
-  const statuses = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"];
+  const statuses = ["PENDING", "PROCESSING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
 
   if (loading) return <LoadingSpinner />;
 
@@ -61,7 +61,7 @@ const ManageOrders = () => {
 
       <div className="space-y-6">
         {orders.map((order) => (
-          <Card key={order.id} className="overflow-hidden">
+          <Card key={order.orderId} className="overflow-hidden">
             <Card.Header className="bg-gray-50">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-4">
@@ -71,8 +71,8 @@ const ManageOrders = () => {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">Order #{order.id}</p>
-                    <p className="text-sm text-gray-500">{formatDate(order.orderDate)}</p>
+                    <p className="font-semibold text-gray-900">Order #{order.orderId}</p>
+                    <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
                     <p className="text-sm text-gray-500">Customer: {order.user?.name || order.user?.email || "N/A"}</p>
                   </div>
                 </div>
@@ -89,19 +89,19 @@ const ManageOrders = () => {
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-3">Order Items</h4>
                   <div className="space-y-2">
-                    {order.items?.map((item, index) => (
+                    {order.orderItems?.map((item, index) => (
                       <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                         <div className="flex items-center">
                           <img
-                            src={item.imageUrl || "/images/laptop.jpg"}
-                            alt={item.productName}
+                            src={item.product?.imageUrl || "/images/laptop.jpg"}
+                            alt={item.product?.name}
                             className="w-10 h-10 rounded object-cover"
                             onError={(e) => {
                               e.target.src = "/images/laptop.jpg";
                             }}
                           />
                           <div className="ml-3">
-                            <p className="text-sm font-medium text-gray-900">{item.productName}</p>
+                            <p className="text-sm font-medium text-gray-900">{item.product?.name}</p>
                             <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                           </div>
                         </div>
@@ -122,12 +122,12 @@ const ManageOrders = () => {
             </Card.Body>
             <Card.Footer>
               <div className="flex justify-between items-center">
-                <p className="text-sm text-gray-500">Last updated: {formatDate(order.updatedAt || order.orderDate)}</p>
+                <p className="text-sm text-gray-500">Last updated: {formatDate(order.createdAt)}</p>
                 <div className="flex flex-wrap gap-2">
                   {statuses.map((status) => (
                     <button
                       key={status}
-                      onClick={() => handleStatusUpdate(order.id, status)}
+                      onClick={() => handleStatusUpdate(order.orderId, status)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
                         order.status === status
                           ? `${getStatusColor(status)} cursor-default`
