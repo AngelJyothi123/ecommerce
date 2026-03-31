@@ -67,12 +67,12 @@ const OrdersPage = () => {
       ) : (
         <div className="space-y-8">
           {orders.map((order) => (
-            <Card key={order.id} className="border border-white/10 hover:border-violet-500/30 transition-colors shadow-[0_0_30px_rgba(255,255,255,0.02)]">
+            <Card key={order.orderId} className="border border-white/10 hover:border-violet-500/30 transition-colors shadow-[0_0_30px_rgba(255,255,255,0.02)]">
               <Card.Header className="bg-[#111111]/80">
                 <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                   <div>
-                    <p className="text-sm font-bold text-gray-300 tracking-wider uppercase mb-1">Order #{order.id}</p>
-                    <p className="text-sm text-gray-500">{formatDate(order.orderDate)}</p>
+                    <p className="text-sm font-bold text-gray-300 tracking-wider uppercase mb-1">Order #{order.orderId}</p>
+                    <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
                   </div>
                   <span className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase ${getStatusColor(order.status)}`}>
                     {order.status}
@@ -81,13 +81,13 @@ const OrdersPage = () => {
               </Card.Header>
               <Card.Body className="bg-black/30">
                 <div className="space-y-4">
-                  {order.items?.map((item, index) => (
+                  {order.orderItems?.map((item, index) => (
                     <div key={index} className="flex items-center justify-between pb-4 border-b border-white/5 last:border-0 last:pb-0">
                       <div className="flex items-center">
                         <div className="w-12 h-12 bg-white/5 rounded-lg border border-white/5 flex items-center justify-center text-xs text-gray-500 mr-4">
                            {item.quantity}x
                         </div>
-                        <span className="text-gray-200 font-medium">{item.productName}</span>
+                        <span className="text-gray-200 font-medium">{item.product?.name}</span>
                       </div>
                       <span className="font-bold text-white tracking-wide">{formatCurrency(item.price * item.quantity)}</span>
                     </div>
@@ -102,7 +102,7 @@ const OrdersPage = () => {
                   </div>
                   {order.status === "PENDING" && (
                     <button
-                      onClick={() => handleCancel(order.id)}
+                      onClick={() => handleCancel(order.orderId)}
                       className="px-6 py-2 rounded-full border border-rose-500/50 text-rose-400 hover:bg-rose-500/10 transition-colors text-sm font-semibold"
                     >
                       Cancel Order

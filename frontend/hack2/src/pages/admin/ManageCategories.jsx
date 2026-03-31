@@ -40,7 +40,7 @@ const ManageCategories = () => {
     e.preventDefault();
     try {
       if (editingCategory) {
-        await categoryService.update(editingCategory.id, formData);
+        await categoryService.update(editingCategory.categoryId, formData);
         addToast("Category updated successfully", "success");
       } else {
         await categoryService.create(formData);
@@ -88,7 +88,7 @@ const ManageCategories = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map((category) => (
-          <Card key={category.id}>
+          <Card key={category.categoryId}>
             <Card.Body>
               <h3 className="text-lg font-semibold">{category.name}</h3>
               <p className="text-gray-500 text-sm mt-1">{category.description || "No description"}</p>
@@ -97,7 +97,7 @@ const ManageCategories = () => {
               <Button variant="secondary" onClick={() => handleEdit(category)} className="mr-2">
                 Edit
               </Button>
-              <Button variant="danger" onClick={() => handleDelete(category.id)}>
+              <Button variant="danger" onClick={() => handleDelete(category.categoryId)}>
                 Delete
               </Button>
             </Card.Footer>

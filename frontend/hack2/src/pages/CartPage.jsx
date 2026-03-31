@@ -8,7 +8,7 @@ const CartPage = () => {
   const { cart, updateQuantity, removeFromCart, cartTotal, clearCart } = useCart();
   const { addToast } = useToast();
 
-  const getItemId = (item) => item.productId || item.id;
+  const getItemId = (item) => item.cartItemId || item.productId || item.id;
 
   const handleRemove = async (item) => {
     try {
@@ -87,7 +87,7 @@ const CartPage = () => {
               <div className="flex-1 ml-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <Link to={`/products/${getItemId(item)}`} className="text-lg font-bold text-white hover:text-fuchsia-400 transition-colors">
+                    <Link to={`/products/${item.productId || item.id}`} className="text-lg font-bold text-white hover:text-fuchsia-400 transition-colors">
                       {item.name}
                     </Link>
                     {item.category && (

@@ -21,7 +21,7 @@ const ManageProducts = () => {
     name: "",
     description: "",
     price: "",
-    stockQuantity: "",
+    stock: "",
     categoryId: "",
     imageUrl: "",
   });
@@ -59,12 +59,12 @@ const ManageProducts = () => {
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
-        stockQuantity: parseInt(formData.stockQuantity),
+        stock: parseInt(formData.stock),
         categoryId: parseInt(formData.categoryId),
       };
 
       if (editingProduct) {
-        await productService.update(editingProduct.id, productData);
+        await productService.update(editingProduct.productId, productData);
         addToast("Product updated successfully", "success");
       } else {
         await productService.create(productData);
@@ -86,8 +86,8 @@ const ManageProducts = () => {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
-      stockQuantity: product.stockQuantity.toString(),
-      categoryId: product.category?.id?.toString() || "",
+      stock: product.stock.toString(),
+      categoryId: product.category?.categoryId?.toString() || "",
       imageUrl: product.imageUrl || "",
     });
     setShowModal(true);
@@ -109,7 +109,7 @@ const ManageProducts = () => {
       name: "",
       description: "",
       price: "",
-      stockQuantity: "",
+      stock: "",
       categoryId: "",
       imageUrl: "",
     });
@@ -138,7 +138,7 @@ const ManageProducts = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
+                <tr key={product.productId} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <img
@@ -159,8 +159,8 @@ const ManageProducts = () => {
                     <span className="text-sm font-medium text-gray-900">{formatCurrency(product.price)}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`text-sm ${product.stockQuantity > 10 ? "text-green-600" : product.stockQuantity > 0 ? "text-yellow-600" : "text-red-600"}`}>
-                      {product.stockQuantity}
+                    <span className={`text-sm ${product.stock > 10 ? "text-green-600" : product.stock > 0 ? "text-yellow-600" : "text-red-600"}`}>
+                      {product.stock ?? "N/A"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -172,7 +172,7 @@ const ManageProducts = () => {
                     <Button variant="secondary" onClick={() => handleEdit(product)} className="mr-2">
                       Edit
                     </Button>
-                    <Button variant="danger" onClick={() => handleDelete(product.id)}>
+                    <Button variant="danger" onClick={() => handleDelete(product.productId)}>
                       Delete
                     </Button>
                   </td>
@@ -213,8 +213,8 @@ const ManageProducts = () => {
             <Input
               label="Stock Quantity"
               type="number"
-              value={formData.stockQuantity}
-              onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
+              value={formData.stock}
+              onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
               required
             />
           </div>
